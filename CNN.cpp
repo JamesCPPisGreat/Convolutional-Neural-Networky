@@ -11,6 +11,13 @@ private:
   int filersize;
 
   float ReLU (float multipliedValue) {
-    if()
+    if(multipliedValue > 0.0) {
+      return multipliedValue;
+    }
+    if (multipliedValue < 0) {
+      return 0;
+    }
   }
-}
+public:
+  
+};
