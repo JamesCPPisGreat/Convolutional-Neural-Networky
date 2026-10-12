@@ -15,7 +15,7 @@ using Filters = std::vector<Filter>;
 class CNN {
 private:
   Filters filters;
-  Filter 
+  std::vector<double> biases;
 
   float ReLU (double multipliedValue) {
     if(multipliedValue > 0.0) {
@@ -28,18 +28,20 @@ private:
 public:
   CNN () {
     filters.resize(16);
+    biases.resize(16);
 
-    for (int i = 0, i < 3, i++) {
+    for (int i = 0; i < 16; i++) {
       filters[i].resize(3);
-      for (int channel = 0, channel < 3, channel++) {
+      biases[i] = randdouble(rng);
+      for (int channel = 0; channel < 3; channel++) {
         filters[i][channel].resize(3);
-        for (int row = 0, row < 3, row++){
+        for (int row = 0; row < 3; row++){
           filters[i][channel][row].resize(3);
-          for (int col = 0, col < 3, col++) {
+          for (int col = 0; col < 3; col++) {
             filters[i][channel][row][col] = randdouble(rng);
           }
         }
       }
     }
-  
+  }
 };
