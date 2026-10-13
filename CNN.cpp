@@ -11,6 +11,7 @@ std::uniform_real_distribution<double> randdouble(-1.0, 1.0);
 using Matrix = std::vector<std::vector<double>>;
 using Filter = std::vector<Matrix>;
 using Filters = std::vector<Filter>;
+using Image = std::vector<Matrix>;
 
 class CNN {
 private:
@@ -43,5 +44,6 @@ public:
         }
       }
     }
+    
   }
 };
