@@ -15,85 +15,32 @@ using Image = std::vector<Matrix>;
 
 class CNN {
 private:
-  Filters filters;
-  Filters filters_but_for_layer_two;
-  Filters filters_but_for_layer_three;
-  Filter final_layer;
+  std::vector<Filters> filters;
   
-  std::vector<double> biases;
-  std::vector<double> biases_2;
-  std::vector<double> biases_3;
-  std::vector<double> final_biases;
+  std::vector<std::vector<double>> biases;
+  std::vector<int> number_of_kernels_or_whatever_per_layer = {16, 36, 42, 58, 80, 45};
 
-  float ReLU (double multipliedValue) {
+  float ReLU (float multipliedValue) {
     return (multipliedValue > 0) ? multipliedValue : 0.0;
   }
   //STILL IN PROGRESS!
-  Matrix multiplyKernels (filters)
+  Matrix multiplyKernels (filters) {
+  }
 public:
   CNN () {
-    filters.resize(16);
-    biases.resize(16);
-
-    for (int i = 0; i < 16; i++) {
-      filters[i].resize(3);
-      biases[i] = randdouble(rng);
-      for (int channel = 0; channel < 3; channel++) {
-        filters[i][channel].resize(3);
-        for (int row = 0; row < 3; row++){
-          filters[i][channel][row].resize(3);
-          for (int col = 0; col < 3; col++) {
-            filters[i][channel][row][col] = randdouble(rng);
-          }
-        }
-      }
-    }
-
-    filters_but_for_layer_two.resize(18);
-    biases_2.resize(18);
-
-    for (int i = 0; i < 18; i++) {
-      filters_but_for_layer_two[i].resize(3);
-      biases_2[i] = randdouble(rng);
-      for (int channel = 0; channel < 3; channel++) {
-        filters_but_for_layer_two[i][channel].resize(3);
-        for (int row = 0; row < 3; row++){
-          filters_but_for_layer_two[i][channel][row].resize(3);
-          for (int col = 0; col < 3; col++) {
-            filters_but_for_layer_two[i][channel][row][col] = randdouble(rng);
-          }
-        }
-      }
-    }
-
-    filters_but_for_layer_three.resize(8);
-    biases_3.resize(8);
-
-    for (int i = 0; i < 8; i++) {
-      filters_but_for_layer_three[i].resize(3);
-      biases_3[i] = randdouble(rng);
-      for (int channel = 0; channel < 3; channel++) {
-        filters_but_for_layer_three[i][channel].resize(3);
-        for (int row = 0; row < 3; row++){
-          filters_but_for_layer_three[i][channel][row].resize(3);
-          for (int col = 0; col < 3; col++) {
-            filters_but_for_layer_three[i][channel][row][col] = randdouble(rng);
-          }
-        }
-      }
-    }
-    final_layer.resize(3);
-    final_biases.resize(3);
-
-    for (int i = 0; i < 3; i++) {
-      filters_but_for_layer_three[i].resize(3);
-      biases_3[i] = randdouble(rng);
-      for (int channel = 0; channel < 3; channel++) {
-        filters_but_for_layer_three[i][channel].resize(3);
-        for (int row = 0; row < 3; row++){
-          filters_but_for_layer_three[i][channel][row].resize(3);
-          for (int col = 0; col < 3; col++) {
-            filters_but_for_layer_three[i][channel][row][col] = randdouble(rng);
+    for (int ft = 0; ft <  6; ft++) {
+      for (int number_of_filters = 0; number_of_filters < number_of_kernels_or_whatever_per_layer[ft]; number_of_filters++) {
+        filters.resize(number_of_kernels_or_whatever_per_layer[ft]);
+        biases.resize(number_of_kernels_or_whatever_per_layer[ft]);   
+        filters[number_of_kernels_or_whatever_per_layer[ft]].resize(3);
+        biases[number_of_kernels_or_whatever_per_layer[ft]] = randdouble(rng);
+        for (int channel = 0; channel < 3; channel++) {
+          filters[i][channel].resize(3);
+          for (int row = 0; row < 3; row++){
+            filters[i][channel][row].resize(3);
+            for (int col = 0; col < 3; col++) {
+              filters[i][channel][row][col] = randdouble(rng);
+            }
           }
         }
       }
