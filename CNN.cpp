@@ -18,10 +18,12 @@ private:
   Filters filters;
   Filters filters_but_for_layer_two;
   Filters filters_but_for_layer_three;
+  Filter final_layer;
   
   std::vector<double> biases;
   std::vector<double> biases_2;
-  std::vector<double> biases_3;  
+  std::vector<double> biases_3;
+  std::vector<double> final_biases;
 
   float ReLU (double multipliedValue) {
     return (multipliedValue > 0) ? multipliedValue : 0.0;
@@ -47,10 +49,10 @@ public:
       }
     }
 
-    filters_but_for_layer_two.resize(12);
-    biases_2.resize(12);
+    filters_but_for_layer_two.resize(18);
+    biases_2.resize(18);
 
-    for (int i = 0; i < 12; i++) {
+    for (int i = 0; i < 18; i++) {
       filters_but_for_layer_two[i].resize(3);
       biases_2[i] = randdouble(rng);
       for (int channel = 0; channel < 3; channel++) {
@@ -64,10 +66,10 @@ public:
       }
     }
 
-    filters_but_for_layer_three.resize(4);
-    biases_3.resize(4);
+    filters_but_for_layer_three.resize(8);
+    biases_3.resize(8);
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 8; i++) {
       filters_but_for_layer_three[i].resize(3);
       biases_3[i] = randdouble(rng);
       for (int channel = 0; channel < 3; channel++) {
@@ -80,5 +82,21 @@ public:
         }
       }
     }
-  }  
+    final_layer.resize(3);
+    final_biases.resize(3);
+
+    for (int i = 0; i < 3; i++) {
+      filters_but_for_layer_three[i].resize(3);
+      biases_3[i] = randdouble(rng);
+      for (int channel = 0; channel < 3; channel++) {
+        filters_but_for_layer_three[i][channel].resize(3);
+        for (int row = 0; row < 3; row++){
+          filters_but_for_layer_three[i][channel][row].resize(3);
+          for (int col = 0; col < 3; col++) {
+            filters_but_for_layer_three[i][channel][row][col] = randdouble(rng);
+          }
+        }
+      }
+    }
+  }
 };
