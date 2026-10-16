@@ -29,10 +29,12 @@ private:
   }
   //STILL IN PROGRESS!
   Image create_vector_to_input_from_this_darn_picturey_thing () {}
+
   Filters multiplyKernels (const Filters &thingamabob, const Image &input_image) {
     for (int no_of_filter = 0; no_of_filter < thingamabob.size(); no_of_filter++) {
       for (int no_of_channel = 0; no_of_channel < thingamabob[filter].size(); no_of_channel++) {
-        
+        double sum = 0.0;
+        sum += thingamabob[no_of_filter][no_of_channel] * input_image[
       }
     }
   }
