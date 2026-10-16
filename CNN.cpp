@@ -29,17 +29,17 @@ private:
 public:
   CNN () {
     for (int ft = 0; ft <  6; ft++) {
+      filters.resize(number_of_kernels_or_whatever_per_layer[ft]);
+      biases.resize(number_of_kernels_or_whatever_per_layer[ft]);   
       for (int number_of_filters = 0; number_of_filters < number_of_kernels_or_whatever_per_layer[ft]; number_of_filters++) {
-        filters.resize(number_of_kernels_or_whatever_per_layer[ft]);
-        biases.resize(number_of_kernels_or_whatever_per_layer[ft]);   
         filters[number_of_kernels_or_whatever_per_layer[ft]].resize(3);
         biases[number_of_kernels_or_whatever_per_layer[ft]] = randdouble(rng);
         for (int channel = 0; channel < 3; channel++) {
-          filters[i][channel].resize(3);
+          filters[number_of_filters][channel].resize(3);
           for (int row = 0; row < 3; row++){
-            filters[i][channel][row].resize(3);
+            filters[number_of_filters][channel][row].resize(3);
             for (int col = 0; col < 3; col++) {
-              filters[i][channel][row][col] = randdouble(rng);
+              filters[number_of_filters][channel][row][col] = randdouble(rng);
             }
           }
         }
