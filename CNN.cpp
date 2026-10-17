@@ -30,9 +30,11 @@ private:
   //STILL IN PROGRESS!
   Image create_vector_to_input_from_this_darn_picturey_thing () {}
 
-  Filters multiplyKernels (const Filters &thingamabob, const Image &input_image) {
+  Filters multiplyKernels_layer_one (const Filters &thingamabob, const Image &input_image const &std::vector<std::vector<double>> biases, int stride, int padding) {
+    if (input_image.empty() || kernels
     for (int no_of_filter = 0; no_of_filter < thingamabob.size(); no_of_filter++) {
       for (int no_of_channel = 0; no_of_channel < thingamabob[filter].size(); no_of_channel++) {
+        for (int pixel_x = 0; pixel_x < 
         double sum = 0.0;
         sum += thingamabob[no_of_filter][no_of_channel] * input_image[
       }
