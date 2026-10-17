@@ -18,8 +18,8 @@ int image_x_dim = 128;
 
 class CNN {
 private:
-  std::vector<Filters> filters;
-  Filter Final_layer;
+  Filters filters;
+  Filters first_layer;
 
   std::vector<std::vector<double>> biases;
   std::vector<int> number_of_kernels_or_whatever_per_layer = {16, 36, 42, 58, 80, 45};
@@ -40,26 +40,30 @@ private:
   }
 public:
   CNN () {
-    filters.resize(number_of_kernels_or_whatever_per_layer.size());
+    filters.resize(number_of_kernels_or_whatever_per_layer.size() - 1);
     biases.resize(number_of_kernels_or_whatever_per_layer.size());
+
+    for (int layer = 0; layer < number_of_kernels_or_whatever_per_layer.size(); layer++) {
+      biases[layer].resize(number_of_kernels_or_whatever_per_layer[layer]);
+      for (int num_filter = 0; num_filter < number_of_kernels_or_whatever_per_layer[layer]; num_filter++) {
+        biases[layer][num_filter] = randdouble(rng);
+      }
+    }
+    
     //number of layers
-    for (int ft = 0; ft <  6; ft++) {
+    for (int ft = 1; ft <  6; ft++) {
       filters[ft].resize(number_of_kernels_or_whatever_per_layer[ft]);
-      biases[ft].resize(number_of_kernels_or_whatever_per_layer[ft]);
       for (int number_of_filters = 0; number_of_filters < number_of_kernels_or_whatever_per_layer[ft]; number_of_filters++) {
         filters[ft][number_of_filters].resize(3);
-        biases[ft][number_of_filters] = randdouble(rng);
-        for (int channel = 0; channel < 3; channel++) {
-          filters[ft][number_of_filters][channel].resize(3);
-          for (int row = 0; row < 3; row++){
-            filters[ft][number_of_filters][channel][row].resize(3);
-            for (int col = 0; col < 3; col++) {
-              filters[ft][number_of_filters][channel][row][col] = randdouble(rng);
-            }
+        for (int row = 0; row < 3; row++){
+          filters[ft][number_of_filters][row].resize(3);
+          for (int col = 0; col < 3; col++) {
+            filters[ft][number_of_filters][row][col] = randdouble(rng);
           }
         }
       }
     }
+    first_layer.resize(number_of_kernels_or_whatever_per_layer[0]);
     
   }
 };
