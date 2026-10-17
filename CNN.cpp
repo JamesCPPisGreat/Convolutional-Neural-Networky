@@ -64,6 +64,18 @@ public:
       }
     }
     first_layer.resize(number_of_kernels_or_whatever_per_layer[0]);
-    
+
+    for (int filter = 0; filter < number_of_kernels_or_whatever_per_layer[0]; filter++) {
+      first_layer[filter].resize(3);
+      for (int channel = 0; channel < 3; channel++) {
+        first_layer[filter][channel].resize(3);
+        for (int row = 0; row < 3; row++) {
+          first_layer[filter][channel][row].resize(3);
+          for (int col = 0; col < 3; col++) {
+            first_layer[filter][channel][row][col] = randdouble(rng);
+          }
+        }
+      }
+    }
   }
 };
