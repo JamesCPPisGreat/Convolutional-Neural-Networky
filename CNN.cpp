@@ -51,7 +51,7 @@ public:
     }
     
     //number of layers
-    for (int ft = 1; ft <  6; ft++) {
+    for (int ft = 1; ft <  5; ft++) {
       filters[ft].resize(number_of_kernels_or_whatever_per_layer[ft]);
       for (int number_of_filters = 0; number_of_filters < number_of_kernels_or_whatever_per_layer[ft]; number_of_filters++) {
         filters[ft][number_of_filters].resize(3);
@@ -63,6 +63,7 @@ public:
         }
       }
     }
+    
     first_layer.resize(number_of_kernels_or_whatever_per_layer[0]);
 
     for (int filter = 0; filter < number_of_kernels_or_whatever_per_layer[0]; filter++) {
