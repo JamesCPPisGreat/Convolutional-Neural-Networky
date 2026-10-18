@@ -20,9 +20,11 @@ class CNN {
 private:
   Filters filters;
   Filters first_layer;
+  
 
   std::vector<std::vector<double>> biases;
   std::vector<int> number_of_kernels_or_whatever_per_layer = {16, 36, 42, 58, 80, 45};
+  std::vector<Matrix> darn_input_maps;
 
   inline double ReLU (double multipliedValue) {
     return (multipliedValue > 0) ? multipliedValue : 0.0;
@@ -43,10 +45,14 @@ private:
               sum += thingamabob[no_of_filter][no_of_channel] * input_image[pixel_x][pixel_y];
               sum += thingamabob[no_of_filter][no_of_channel] * input_image[pixel_x + 1][pixel_y];
               sum += thingamabob[no_of_filter][no_of_channel] * input_image[pixel_x + 2][pixel_y];
-              sum += thingamabob[no_of_filter][no_of_channel] * input_image[pixel_x][pixel_y + 1];
-              sum += thingamabob[no_of_filter][no_of_channel] * input_image[pixel_x + 1][pixel_y + 1];
-              sum += thingamabob[no_of_filter][no_of_channel] * input_image[pixel_x + 2][pixel_y + 1];
-
+              sum += thingamabob[no_of_filter][no_of_channel] * input_image[pixel_x][pixel_y - 1];
+              sum += thingamabob[no_of_filter][no_of_channel] * input_image[pixel_x + 1][pixel_y - 1];
+              sum += thingamabob[no_of_filter][no_of_channel] * input_image[pixel_x + 2][pixel_y - 1];
+              sum += thingamabob[no_of_filter][no_of_channel] * input_image[pixel_x][pixel_y - 2];
+              sum += thingamabob[no_of_filter][no_of_channel] * input_image[pixel_x + 1][pixel_y - 2];
+              sum += thingamabob[no_of_filter][no_of_channel] * input_image[pixel_x + 2][pixel_y - 2];
+              sum += biases[1][no_of_filter] / 3;
+              
             }
           }
         }
