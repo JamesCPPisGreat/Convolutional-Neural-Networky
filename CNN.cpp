@@ -37,10 +37,16 @@ private:
     else if {
       for (int no_of_filter = 0; no_of_filter < thingamabob.size(); no_of_filter++) {
         for (int no_of_channel = 0; no_of_channel < thingamabob[filter].size(); no_of_channel++) {
-          for (int pixel_x = 0; pixel_x < image_x_dim; pixel_x++) {
-            for (int pixel_y = 0; pixel_y < image_y_dim; pixel_y++) {
+          for (int pixel_x = 0; pixel_x < image_x_dim - 2; pixel_x++) {
+            for (int pixel_y = 0; pixel_y < image_y_dim - 2; pixel_y++) {
               double sum = 0.0;
               sum += thingamabob[no_of_filter][no_of_channel] * input_image[pixel_x][pixel_y];
+              sum += thingamabob[no_of_filter][no_of_channel] * input_image[pixel_x + 1][pixel_y];
+              sum += thingamabob[no_of_filter][no_of_channel] * input_image[pixel_x + 2][pixel_y];
+              sum += thingamabob[no_of_filter][no_of_channel] * input_image[pixel_x][pixel_y + 1];
+              sum += thingamabob[no_of_filter][no_of_channel] * input_image[pixel_x + 1][pixel_y + 1];
+              sum += thingamabob[no_of_filter][no_of_channel] * input_image[pixel_x + 2][pixel_y + 1];
+
             }
           }
         }
