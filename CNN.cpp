@@ -18,7 +18,7 @@ int image_x_dim = 128;
 
 class CNN {
 private:
-  Filters filters;
+  std::vector<Filters> filters;
   Filters first_layer;
   
 
@@ -75,16 +75,17 @@ public:
     for (int ft = 1; ft <  5; ft++) {
       filters[ft].resize(number_of_kernels_or_whatever_per_layer[ft]);
       for (int number_of_filters = 0; number_of_filters < number_of_kernels_or_whatever_per_layer[ft]; number_of_filters++) {
-        filters[ft][number_of_filters].resize(3);
-        for (int row = 0; row < 3; row++){
-          filters[ft][number_of_filters][row].resize(3);
-          for (int col = 0; col < 3; col++) {
-            filters[ft][number_of_filters][row][col] = randdouble(rng);
+        for (int num_of_input_maps_per_filter_aka_channels = 0; num_of_input_maps_per_filter_aka_channels < number_of_kernels_or_whatever_per_layer[ft -1]; number_of_kernels_or_whatever_per_layer++{
+          filters[ft][number_of_filters].resize(3);
+          for (int row = 0; row < 3; row++){
+            filters[ft][number_of_filters][row].resize(3);
+            for (int col = 0; col < 3; col++) {
+              filters[ft][number_of_filters][row][col] = randdouble(rng);
+            }
           }
         }
       }
     }
-    
     first_layer.resize(number_of_kernels_or_whatever_per_layer[0]);
 
     for (int filter = 0; filter < number_of_kernels_or_whatever_per_layer[0]; filter++) {
