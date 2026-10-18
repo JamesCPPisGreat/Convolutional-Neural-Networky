@@ -44,7 +44,7 @@ private:
         }
       } 
     }    
-}
+  }
 public:
   CNN () {
     filters.resize(number_of_kernels_or_whatever_per_layer.size() - 1);
