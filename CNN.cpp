@@ -31,16 +31,17 @@ private:
   }
   //STILL IN PROGRESS!
   Image create_vector_to_input_from_this_darn_picturey_thing () {}
-
-  Filters multiplyKernels_layer_one (const Filters &thingamabob, const Image &input_image const &std::vector<std::vector<double>> biases, int stride, int padding) {
-    if (input_image.empty() || thingamabob.empty()) {
+//WORK HErE
+  Filters multiplyKernels (const std::vector<Filters> &thingamabob, const Image &input_image const std::vector<std::vector<double>> &biases, int stride, int padding) {
+    if (input_image.empty() || thingamabob.empty() {
       return {};
     }
     else if {
-      for (int no_of_filter = 0; no_of_filter < thingamabob.size(); no_of_filter++) {
-        for (int no_of_channel = 0; no_of_channel < thingamabob[filter].size(); no_of_channel++) {
-          for (int pixel_x = 0; pixel_x < image_x_dim - 2; pixel_x++) {
-            for (int pixel_y = 0; pixel_y < image_y_dim - 2; pixel_y++) {
+      for(int layer_number = 0; layer_number < thingamabob
+      for (int no_of_filter = 0; no_of_filter < thingamabob[layer_number].size(); no_of_filter++) {
+        for (int pixel_x = 0; pixel_x < image_x_dim - 2; pixel_x++) {
+          for (int pixel_y = 0; pixel_y < image_y_dim - 2; pixel_y++) {
+            for (int no_of_channel = 0; no_of_channel < thingamabob[filter].size(); no_of_channel++) {
               double sum = 0.0;
               
             }
