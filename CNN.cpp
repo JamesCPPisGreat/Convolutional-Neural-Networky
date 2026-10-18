@@ -42,16 +42,6 @@ private:
           for (int pixel_x = 0; pixel_x < image_x_dim - 2; pixel_x++) {
             for (int pixel_y = 0; pixel_y < image_y_dim - 2; pixel_y++) {
               double sum = 0.0;
-              sum += thingamabob[no_of_filter][no_of_channel] * input_image[pixel_x][pixel_y];
-              sum += thingamabob[no_of_filter][no_of_channel] * input_image[pixel_x + 1][pixel_y];
-              sum += thingamabob[no_of_filter][no_of_channel] * input_image[pixel_x + 2][pixel_y];
-              sum += thingamabob[no_of_filter][no_of_channel] * input_image[pixel_x][pixel_y - 1];
-              sum += thingamabob[no_of_filter][no_of_channel] * input_image[pixel_x + 1][pixel_y - 1];
-              sum += thingamabob[no_of_filter][no_of_channel] * input_image[pixel_x + 2][pixel_y - 1];
-              sum += thingamabob[no_of_filter][no_of_channel] * input_image[pixel_x][pixel_y - 2];
-              sum += thingamabob[no_of_filter][no_of_channel] * input_image[pixel_x + 1][pixel_y - 2];
-              sum += thingamabob[no_of_filter][no_of_channel] * input_image[pixel_x + 2][pixel_y - 2];
-              sum += biases[1][no_of_filter] / 3;
               
             }
           }
@@ -75,7 +65,8 @@ public:
     for (int ft = 1; ft <  5; ft++) {
       filters[ft].resize(number_of_kernels_or_whatever_per_layer[ft]);
       for (int number_of_filters = 0; number_of_filters < number_of_kernels_or_whatever_per_layer[ft]; number_of_filters++) {
-        for (int num_of_input_maps_per_filter_aka_channels = 0; num_of_input_maps_per_filter_aka_channels < number_of_kernels_or_whatever_per_layer[ft -1]; number_of_kernels_or_whatever_per_layer++{
+        filters[ft][number_of_filters].resize(number_of_kernels_or_whatever_per_layer[ft -1]);
+        for (int num_of_input_maps_per_filter_aka_channels = 0; num_of_input_maps_per_filter_aka_channels < number_of_kernels_or_whatever_per_layer[ft -1]; number_of_kernels_or_whatever_per_layer++) {
           filters[ft][number_of_filters].resize(3);
           for (int row = 0; row < 3; row++){
             filters[ft][number_of_filters][row].resize(3);
