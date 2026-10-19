@@ -16,6 +16,9 @@ using Image = std::vector<Matrix>;
 int image_y_dim = 128;
 int image_x_dim = 128;
 
+int filter_size_x;
+int filter_size_y;
+
 class CNN {
 private:
   std::vector<Filters> filters;
@@ -24,26 +27,33 @@ private:
 
   std::vector<std::vector<double>> biases;
   std::vector<int> number_of_kernels_or_whatever_per_layer = {16, 36, 42, 58, 80, 45};
-  std::vector<Matrix> darn_input_maps;
+  std::vector<std::vector<Matrix>> darn_input_maps;
 
   inline double ReLU (double multipliedValue) {
     return (multipliedValue > 0) ? multipliedValue : 0.0;
   }
   //STILL IN PROGRESS!
   Image create_vector_to_input_from_this_darn_picturey_thing () {}
-//WORK HErE
-  Filters multiplyKernels (const std::vector<Filters> &thingamabob, const Image &input_image const std::vector<std::vector<double>> &biases, int stride, int padding) {
+//WORK HERE
+  
+
+  Filters multiplyKernels (const std::vector<Filters> &thingamabob, const Image &input_image const std::vector<std::vector<double>> &biases) {
     if (input_image.empty() || thingamabob.empty() {
       return {};
     }
     else if {
-      for(int layer_number = 0; layer_number < thingamabob
-      for (int no_of_filter = 0; no_of_filter < thingamabob[layer_number].size(); no_of_filter++) {
-        for (int pixel_x = 0; pixel_x < image_x_dim - 2; pixel_x++) {
-          for (int pixel_y = 0; pixel_y < image_y_dim - 2; pixel_y++) {
-            for (int no_of_channel = 0; no_of_channel < thingamabob[filter].size(); no_of_channel++) {
-              double sum = 0.0;
-              
+      for(int layer_number = 0; layer_number < thingamabob.size(); layer++) {
+        for (int no_of_filter = 0; no_of_filter < thingamabob[layer_number].size(); no_of_filter++) {
+          for (int pixel_x = 0; pixel_x < image_x_dim - 2; pixel_x++) {
+            for (int pixel_y = 0; pixel_y < image_y_dim - 2; pixel_y++) {
+              for (int no_of_channel = 0; no_of_channel < thingamabob[filter].size(); no_of_channel++) {
+                for (int row = 0; row < filter_size_y; matrix++) {
+                  for (int col = 0; col < filter_size_x; col++) {
+                    double sum = 0.0;
+                    sum += thingamabob[layer_number][no_of_filter]/**[pixel_x][pixel_y]**/[no_of_channel][row][col] * input_image[no_of_channel][pixel_x][pixel_y];
+                  } //work on putting the darn thing in the matrix
+                }
+              }
             }
           }
         }
