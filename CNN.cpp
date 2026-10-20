@@ -52,6 +52,7 @@ private:
                   for (int col = 0; col < filter_size_x; col++) {
                     
                     sum += thingamabob[layer_number][no_of_filter]/**[pixel_x][pixel_y]**/[no_of_channel][row][col] * input_image[no_of_channel][pixel_x][pixel_y];
+                    darn_input_maps[layer_number + 1][no_of_filter][
                   } //work on putting the darn thing in the matrix
                 }
               }
