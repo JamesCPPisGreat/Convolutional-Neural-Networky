@@ -15,6 +15,8 @@ using Image = std::vector<Matrix>;
 
 int image_y_dim = 128;
 int image_x_dim = 128;
+int count_x = 0.0;
+int count_y = 0.0;
 
 int filter_size_x;
 int filter_size_y;
@@ -37,7 +39,7 @@ private:
 //WORK HERE
   
 
-  Filters multiplyKernels (const std::vector<Filters> &thingamabob, const Image &input_image, const std::vector<std::vector<double>> &biases) {
+  Filters multiplyKernels (const std::vector<Filters> &thingamabob, const std::vector<Filters> ;, const std::vector<std::vector<double>> &biases) {
     if (input_image.empty() || thingamabob.empty() {
       return {};
     }
@@ -46,16 +48,19 @@ private:
         for (int no_of_filter = 0; no_of_filter < thingamabob[layer_number].size(); no_of_filter++) {
           for (int pixel_x = 0; pixel_x < image_x_dim - 2; pixel_x++) {
             for (int pixel_y = 0; pixel_y < image_y_dim - 2; pixel_y++) {
+              count_x ++;
+              count_y ++;
               double sum = 0.0;
               for (int no_of_channel = 0; no_of_channel < thingamabob[no_of_filter].size(); no_of_channel++) {
                 for (int row = 0; row < filter_size_y; row++) {
                   for (int col = 0; col < filter_size_x; col++) {
                     
                     sum += thingamabob[layer_number][no_of_filter]/**[pixel_x][pixel_y]**/[no_of_channel][row][col] * input_image[no_of_channel][pixel_x][pixel_y];
-                    darn_input_maps[layer_number + 1][no_of_filter][
+                    
                   } //work on putting the darn thing in the matrix
                 }
               }
+              darn_input_maps[layer + 1][no_of_filter][count_x][count_y] = sum;
             }
           }
         }
