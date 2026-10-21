@@ -44,10 +44,10 @@ private:
     else {
       for(int layer_number = 0; layer_number < thingamabob.size(); layer_number++) {
         for (int no_of_filter = 0; no_of_filter < thingamabob[layer_number].size(); no_of_filter++) {
-          for (int pixel_x = 0; pixel_x < image_x_dim - 2; pixel_x++) {
+          for (int pixel_y = 0; pixel_y < image_y_dim - 2; pixel_y++) {
             int count_x = -1;
             int count_y = -1;
-            for (int pixel_y = 0; pixel_y < image_y_dim - 2; pixel_y++) {
+            for (int pixel_x = 0; pixel_x < image_x_dim - 2; pixel_x++) {
               count_x ++;
               count_y ++;
               double sum = biases[layer_number][no_of_filter];
