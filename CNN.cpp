@@ -15,8 +15,6 @@ using Image = std::vector<Matrix>;
 
 int image_y_dim = 128;
 int image_x_dim = 128;
-int count_x = 0.0;
-int count_y = 0.0;
 
 int filter_size_x;
 int filter_size_y;
@@ -47,10 +45,12 @@ private:
       for(int layer_number = 0; layer_number < thingamabob.size(); layer_number++) {
         for (int no_of_filter = 0; no_of_filter < thingamabob[layer_number].size(); no_of_filter++) {
           for (int pixel_x = 0; pixel_x < image_x_dim - 2; pixel_x++) {
+            int count_x = -1;
+            int count_y = -1;
             for (int pixel_y = 0; pixel_y < image_y_dim - 2; pixel_y++) {
               count_x ++;
               count_y ++;
-              double sum = 0.0;
+              double sum = biases[layer][no_of_filter];
               for (int no_of_channel = 0; no_of_channel < thingamabob[no_of_filter].size(); no_of_channel++) {
                 for (int row = 0; row < filter_size_y; row++) {
                   for (int col = 0; col < filter_size_x; col++) {
