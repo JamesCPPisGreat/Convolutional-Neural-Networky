@@ -38,10 +38,10 @@ private:
   
 
   Filters multiplyKernels (const std::vector<Filters> &thingamabob, const std::vector<std::vector<Matrix>> &input_maps, const std::vector<std::vector<double>> &biases) {
-    if (input_image.empty() || thingamabob.empty() {
+    if (input_image.empty() || thingamabob.empty()) {
       return {};
     }
-    else if {
+    else {
       for(int layer_number = 0; layer_number < thingamabob.size(); layer_number++) {
         for (int no_of_filter = 0; no_of_filter < thingamabob[layer_number].size(); no_of_filter++) {
           for (int pixel_x = 0; pixel_x < image_x_dim - 2; pixel_x++) {
@@ -50,12 +50,12 @@ private:
             for (int pixel_y = 0; pixel_y < image_y_dim - 2; pixel_y++) {
               count_x ++;
               count_y ++;
-              double sum = biases[layer][no_of_filter];
+              double sum = biases[layer_number][no_of_filter];
               for (int no_of_channel = 0; no_of_channel < thingamabob[no_of_filter].size(); no_of_channel++) {
                 for (int row = 0; row < filter_size_y; row++) {
                   for (int col = 0; col < filter_size_x; col++) {
                     
-                    sum += thingamabob[layer_number][no_of_filter]/**[pixel_x][pixel_y]**/[no_of_channel][row][col] * input_image[no_of_channel][pixel_x][pixel_y];
+                    sum += thingamabob[layer_number][no_of_filter]/**[pixel_x][pixel_y]**/[no_of_channel][row][col] * input_maps[no_of_channel][pixel_x][pixel_y];
                   
                   } //work on putting the darn thing in the matrix
                 }
@@ -85,11 +85,11 @@ public:
       for (int number_of_filters = 0; number_of_filters < number_of_kernels_or_whatever_per_layer[ft]; number_of_filters++) {
         filters[ft][number_of_filters].resize(number_of_kernels_or_whatever_per_layer[ft -1]);
         for (int num_of_input_maps_per_filter_aka_channels = 0; num_of_input_maps_per_filter_aka_channels < number_of_kernels_or_whatever_per_layer[ft -1]; number_of_kernels_or_whatever_per_layer++) {
-          filters[ft][number_of_filters].resize(3);
+          filters[ft][number_of_filters][num_of_input_maps_per_filter_aka_channels].resize(3);
           for (int row = 0; row < 3; row++){
-            filters[ft][number_of_filters][row].resize(3);
+            filters[ft][number_of_filters][num_of_input_maps_per_filter_aka_channels][row].resize(3);
             for (int col = 0; col < 3; col++) {
-              filters[ft][number_of_filters][row][col] = randdouble(rng);
+              filters[ft][number_of_filters][num_of_input_maps_per_filter_aka_channels][row][col] = randdouble(rng);
             }
           }
         }
