@@ -69,7 +69,7 @@ private:
   }
 public:
   CNN () {
-    filters.resize(number_of_kernels_or_whatever_per_layer.size() - 1);
+    filters.resize(number_of_kernels_or_whatever_per_layer.size());
     biases.resize(number_of_kernels_or_whatever_per_layer.size());
 
     for (int layer = 0; layer < number_of_kernels_or_whatever_per_layer.size(); layer++) {
@@ -101,9 +101,9 @@ public:
       first_layer[filter].resize(3);
       for (int channel = 0; channel < 3; channel++) {
         first_layer[filter][channel].resize(3);
-        for (int row = 0; row < 3; row++) {
+        for (int row = 0; row < filter_size_x; row++) {
           first_layer[filter][channel][row].resize(3);
-          for (int col = 0; col < 3; col++) {
+          for (int col = 0; col < 3; filter_size_y++) {
             first_layer[filter][channel][row][col] = randdouble(rng);
           }
         }
