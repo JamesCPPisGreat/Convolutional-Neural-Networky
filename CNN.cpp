@@ -37,7 +37,7 @@ private:
 //WORK HERE
   
 
-  Filters multiplyKernels (const std::vector<Filters> &thingamabob, const std::vector<Filters> ;, const std::vector<std::vector<double>> &biases) {
+  Filters multiplyKernels (const std::vector<Filters> &thingamabob, const std::vector<std::vector<Matrix>> &input_maps, const std::vector<std::vector<double>> &biases) {
     if (input_image.empty() || thingamabob.empty() {
       return {};
     }
@@ -56,7 +56,7 @@ private:
                   for (int col = 0; col < filter_size_x; col++) {
                     
                     sum += thingamabob[layer_number][no_of_filter]/**[pixel_x][pixel_y]**/[no_of_channel][row][col] * input_image[no_of_channel][pixel_x][pixel_y];
-                    
+                  
                   } //work on putting the darn thing in the matrix
                 }
               }
