@@ -28,6 +28,7 @@ private:
   std::vector<std::vector<double>> biases;
   std::vector<int> number_of_kernels_or_whatever_per_layer = {16, 36, 42, 58, 80, 45};
   std::vector<std::vector<Matrix>> darn_input_maps;
+  darn_input_maps.resize(image_x_dim - kernel_size_x + 1);
 
   inline double ReLU (double multipliedValue) {
     return (multipliedValue > 0) ? multipliedValue : 0.0;
@@ -37,30 +38,28 @@ private:
 //WORK HERE
   
 
-  Filters multiplyKernels (const std::vector<Filters> &thingamabob, const std::vector<std::vector<Matrix>> &input_maps, const std::vector<std::vector<double>> &biases) {
+  void multiplyKernels (const std::vector<Filters> &thingamabob, const std::vector<std::vector<Matrix>> &input_maps, const std::vector<std::vector<double>> &biases) {
     if (input_maps.empty() || thingamabob.empty()) {
       return {};
     }
     else {
       for(int layer_number = 0; layer_number < thingamabob.size(); layer_number++) {
         for (int no_of_filter = 0; no_of_filter < thingamabob[layer_number].size(); no_of_filter++) {
-          for (int pixel_y = 0; pixel_y < image_y_dim; pixel_y++) {
-            int count_x = -1;
-            int count_y = -1;
-            for (int pixel_x = 0; pixel_x < image_x_dim; pixel_x++) {
-              count_x ++;
-              count_y ++;
+          int output_width = image_x_dim - filter_size_x + 1;
+          int output_height = image_y_dim - filter_size_y + 1;
+          for (int pixel_y = 0; pixel_y < output_height; pixel_y++) {
+            for (int pixel_x = 0; pixel_x < output_width; pixel_x++) {
               double sum = biases[layer_number][no_of_filter];
-              for (int no_of_channel = 0; no_of_channel < thingamabob[no_of_filter].size(); no_of_channel++) {
+              for (int no_of_channel = 0; no_of_channel < thingamabob[layer_number][no_of_filter].size(); no_of_channel++) {
                 for (int row = 0; row < filter_size_y; row++) {
                   for (int col = 0; col < filter_size_x; col++) {
                     
-                    sum += thingamabob[layer_number][no_of_filter]/**[pixel_x][pixel_y]**/[no_of_channel][row][col] * input_maps[no_of_channel][pixel_x][pixel_y];
+                    sum += thingamabob[layer_number][no_of_filter]/**[pixel_x][pixel_y]**/[no_of_channel][row][col] * input_maps[no_of_channel][pixel_y + row][pixel_x + col];
                   
                   } //work on putting the darn thing in the matrix
                 }
               }
-              darn_input_maps[layer_number + 1][no_of_filter][count_x][count_y] = sum;
+              darn_input_maps[layer_number + 1][number_of_kernels_or_whatever_per_layer[layer_number + 1]][pixel_y][pixel_x] = sum;
             }
           }
         }
@@ -103,7 +102,7 @@ public:
         first_layer[filter][channel].resize(3);
         for (int row = 0; row < filter_size_x; row++) {
           first_layer[filter][channel][row].resize(3);
-          for (int col = 0; col < 3; filter_size_y++) {
+          for (int col = 0; col < 3; col++) {
             first_layer[filter][channel][row][col] = randdouble(rng);
           }
         }
