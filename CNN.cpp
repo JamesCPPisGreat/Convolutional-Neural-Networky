@@ -28,7 +28,6 @@ private:
   std::vector<std::vector<double>> biases;
   std::vector<int> number_of_kernels_or_whatever_per_layer = {16, 36, 42, 58, 80, 45};
   std::vector<std::vector<Matrix>> darn_input_maps;
-  darn_input_maps.resize(image_x_dim - kernel_size_x + 1);
 
   inline double ReLU (double multipliedValue) {
     return (multipliedValue > 0) ? multipliedValue : 0.0;
@@ -40,19 +39,19 @@ private:
 
   void multiplyKernels (const std::vector<Filters> &thingamabob, const std::vector<std::vector<Matrix>> &input_maps, const std::vector<std::vector<double>> &biases) {
     if (input_maps.empty() || thingamabob.empty()) {
-      return {};
+      return;
     }
     else {
       for(int layer_number = 0; layer_number < thingamabob.size(); layer_number++) {
         for (int no_of_filter = 0; no_of_filter < thingamabob[layer_number].size(); no_of_filter++) {
-          int output_width = image_x_dim - filter_size_x + 1;
-          int output_height = image_y_dim - filter_size_y + 1;
+          int output_width = image_x_dim - kernel_size_x + 1;
+          int output_height = image_y_dim - kernel_size_y + 1;
           for (int pixel_y = 0; pixel_y < output_height; pixel_y++) {
             for (int pixel_x = 0; pixel_x < output_width; pixel_x++) {
               double sum = biases[layer_number][no_of_filter];
               for (int no_of_channel = 0; no_of_channel < thingamabob[layer_number][no_of_filter].size(); no_of_channel++) {
-                for (int row = 0; row < filter_size_y; row++) {
-                  for (int col = 0; col < filter_size_x; col++) {
+                for (int row = 0; row < kernel_size_y; row++) {
+                  for (int col = 0; col < kernel_size_x; col++) {
                     
                     sum += thingamabob[layer_number][no_of_filter]/**[pixel_x][pixel_y]**/[no_of_channel][row][col] * input_maps[no_of_channel][pixel_y + row][pixel_x + col];
                   
@@ -79,7 +78,7 @@ public:
     }
     
     //number of layers
-    for (int ft = 1; ft <  5; ft++) {
+    for (int ft = 1; ft <  6; ft++) {
       filters[ft].resize(number_of_kernels_or_whatever_per_layer[ft]);
       for (int number_of_filters = 0; number_of_filters < number_of_kernels_or_whatever_per_layer[ft]; number_of_filters++) {
         filters[ft][number_of_filters].resize(number_of_kernels_or_whatever_per_layer[ft -1]);
