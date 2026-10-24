@@ -69,7 +69,20 @@ public:
   CNN () {
     filters.resize(number_of_kernels_or_whatever_per_layer.size());
     biases.resize(number_of_kernels_or_whatever_per_layer.size());
+    darn_input_maps.resize(number_of_kernels_or_whatever_per_layer.size());
 
+    //input map sizing; STILL IN PROGRESS
+    int dimension;
+    for (int layer = 0; layer < number_of_kernels_or_whatever_per_layer.size(); layer++) {
+      darn_input_maps[layer].resize(number_of_kernels_or_whatever_per_layer[layer].size());
+      dimension 
+      for (int filter = 0; filter < number_of_kernels_or_whatever_per_layer[layer].size(); filter++) {
+        darn_input_maps[layer][filter].resize(number_of_kernels_or_whatever_per_layer[layer].size());
+        for (int row = 0; row < 
+      }
+    }
+
+    //bias sizing
     for (int layer = 0; layer < number_of_kernels_or_whatever_per_layer.size(); layer++) {
       biases[layer].resize(number_of_kernels_or_whatever_per_layer[layer]);
       for (int num_filter = 0; num_filter < number_of_kernels_or_whatever_per_layer[layer]; num_filter++) {
@@ -77,7 +90,7 @@ public:
       }
     }
     
-    //number of layers
+    //random initialization
     for (int ft = 1; ft <  6; ft++) {
       filters[ft].resize(number_of_kernels_or_whatever_per_layer[ft]);
       for (int number_of_filters = 0; number_of_filters < number_of_kernels_or_whatever_per_layer[ft]; number_of_filters++) {
@@ -95,11 +108,12 @@ public:
     }
     first_layer.resize(number_of_kernels_or_whatever_per_layer[0]);
 
+    //layer one random initialization bc i want to
     for (int filter = 0; filter < number_of_kernels_or_whatever_per_layer[0]; filter++) {
       first_layer[filter].resize(3);
       for (int channel = 0; channel < 3; channel++) {
         first_layer[filter][channel].resize(3);
-        for (int row = 0; row < filter_size_x; row++) {
+        for (int row = 0; row < kernel_size_x; row++) {
           first_layer[filter][channel][row].resize(3);
           for (int col = 0; col < 3; col++) {
             first_layer[filter][channel][row][col] = randdouble(rng);
