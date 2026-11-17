@@ -3,18 +3,20 @@
 #include <algorithm>
 #include <iostream>
 #include <random>
+#include <string>
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/imgproc.hpp>
 
 /**This code is not meant to function as a real Convolutional Neural Network would, but show how they are structured
 and how they calculate and predict.
 A real-world CNN would utlilize a deep learning framework, using tensors as opposed to nested vectors.
 To be clear, this can function as a CNN, but it is not optimized for performance and is not suitable for
 real-world applications. It is meant to be a learning tool for understanding the basic concepts of CNNs.
-THIS WAS CODED FOR EDUCATIONAL PURPOSES ONLY BY A *REAL HUMAN BEING. I HAVE NOT USED ANY AI TOOLS TO WRITE 
+THIS WAS CODED FOR EDUCATIONAL PURPOSES ONLY BY A REAL HUMAN BEING. I HAVE NOT USED ANY AI TOOLS TO WRITE 
 THIS CODE. I HAVE WRITTEN THIS CODE MYSELF, WITH THE EXCEPTION OF A FEW AUTOCOMPLETED LINES. I do not like
 using AI tools to write code, as I believe it is important to understand the underlying concepts and logic behind the code.
 Enjoy! (The goofy names are a result of my frustration with the complexity of CNNs in raw C++ and my desire to make the 
-code more relatable and less intimidating.) 
-*Interestingly enough, I used AI to write the line about not being AI. :P
+code more relatable and less intimidating.)
 */
 
 //Random number generator for initializing weights and biases
@@ -83,6 +85,15 @@ class CNN {
 
   //STILL IN PROGRESS!
   Image create_vector_to_input_from_this_darn_picturey_thing () {
+    std::string filename;
+    std::cout << "Enter the filename of your image: ";
+    std::getline(std::cin, filename);
+    cv::Mat decoded = cv::imread(filename, cv::IMREAD_COLOR);
+    if (decoded.empty()) {
+      std::cerr << "Error: Could not open or find the image." << std::endl;
+      return {};
+
+    }
     return photo_vectors;
   }
   //WORK HERE
