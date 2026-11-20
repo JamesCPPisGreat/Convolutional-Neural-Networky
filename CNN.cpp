@@ -83,17 +83,22 @@ class CNN {
     return output_vector;
   }
 
+  /**int Normalize (int final_grad, int theor_max, int value) {
+    double nv;
+    nv = (value / theor_max) * final_grad;
+    return nv;
+  } */
+
   //STILL IN PROGRESS!
-  Image create_vector_to_input_from_this_darn_picturey_thing () {
-    std::string filename;
-    std::cout << "Enter the filename of your image: ";
-    std::getline(std::cin, filename);
+  Image create_vector_to_input_from_this_darn_picturey_thing (std::string filename) {
     cv::Mat decoded = cv::imread(filename, cv::IMREAD_COLOR);
     if (decoded.empty()) {
       std::cerr << "Error: Could not open or find the image." << std::endl;
       return {};
-
     }
+    cv::resize(decoded, decoded, cv::Size(image_x_dim, image_y_dim));
+    decoded.convertTo(decoded, CV_32FC3, 1.0 / 255.0);
+    photo_vectors copy(decoded.begin<float>(), decoded.end<float>());
     return photo_vectors;
   }
   //WORK HERE
