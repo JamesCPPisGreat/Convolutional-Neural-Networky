@@ -6,6 +6,7 @@
 #include <string>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
+#include <fstream>
 
 /**This code is not meant to function as a real Convolutional Neural Network would, but show how they are structured
 and how they calculate and predict.
@@ -83,13 +84,6 @@ class CNN {
     return output_vector;
   }
 
-  /**int Normalize (int final_grad, int theor_max, int value) {
-    double nv;
-    nv = (value / theor_max) * final_grad;
-    return nv;
-  } */
-
-  //STILL IN PROGRESS!
   Image create_vector_to_input_from_this_darn_picturey_thing (std::string filename) {
     cv::Mat decoded = cv::imread(filename, cv::IMREAD_COLOR);
     if (decoded.empty()) {
@@ -97,11 +91,20 @@ class CNN {
       return {};
     }
     cv::resize(decoded, decoded, cv::Size(image_x_dim, image_y_dim));
+    //normalizes values to the range [0, 1] for better convergence during training
     decoded.convertTo(decoded, CV_32FC3, 1.0 / 255.0);
-    photo_vectors copy(decoded.begin<float>(), decoded.end<float>());
+    photo_vectors.assign(3, Matrix(image_y_dim, std::vector<double>(image_x_dim, 0.0)));
+    for(int y = 0; y < image_y_dim; y++) {
+      for (int x = 0; x < image_x_dim; x++) {
+        cv::Vec3f pixel = decoded.at<cv::Vec3f>(y, x);
+        //0: red, 1: green, 2: blue
+        photo_vectors[0][y][x] = pixel[2];
+        photo_vectors[1][y][x] = pixel[1];
+        photo_vectors[2][y][x] = pixel[0];
+      }
+    }
     return photo_vectors;
   }
-  //WORK HERE
   
   std::vector<double> classify (const std::vector<Matrix> &input_maps, const std::vector<std::vector<double>>& class_weights, const std::vector<double>& class_biases) {
     if (input_maps.empty()) {
@@ -196,6 +199,58 @@ class CNN {
     }
   }
 
+  //function to load weights and biases from a file as opposed to random initialization, for testing and evaluation purposes
+  bool load_weights_and_biases_from_file(const std::string &filename) {
+    std::ifstream file(filename);
+     if (!file) {
+      return false;
+    }
+    
+    biases.resize(number_of_kernels_or_whatever_per_layer.size());
+    for (int layer = 0; layer < number_of_kernels_or_whatever_per_layer.size(); layer++) {
+      biases[layer].resize(number_of_kernels_or_whatever_per_layer[layer]);
+      for (int num_filter = 0; num_filter < number_of_kernels_or_whatever_per_layer[layer]; num_filter++) {
+        if (!(file >> biases[layer][num_filter])) {
+          return false;
+        }
+      }
+    }
+
+    filters.resize(number_of_kernels_or_whatever_per_layer.size());
+    for (int ft = 0; ft < number_of_kernels_or_whatever_per_layer.size(); ft++) {
+       filters[ft].resize(number_of_kernels_or_whatever_per_layer[ft]);
+       for (int number_of_filters = 0; number_of_filters < number_of_kernels_or_whatever_per_layer[ft]; number_of_filters++) {
+         filters[ft][number_of_filters].resize((ft == 0) ? 3 : number_of_kernels_or_whatever_per_layer[ft - 1]);
+         for (int num_of_input_maps_per_filter_aka_channels = 0; num_of_input_maps_per_filter_aka_channels < ((ft == 0) ? 3 : number_of_kernels_or_whatever_per_layer[ft - 1]); num_of_input_maps_per_filter_aka_channels++) {
+           filters[ft][number_of_filters][num_of_input_maps_per_filter_aka_channels].resize(kernel_size_x);
+           for (int row = 0; row < kernel_size_x; row++) {
+             filters[ft][number_of_filters][num_of_input_maps_per_filter_aka_channels][row].resize(kernel_size_y);
+            for (int col = 0; col < kernel_size_y; col++) {
+               if (!(file >> filters[ft][number_of_filters][num_of_input_maps_per_filter_aka_channels][row][col])) {
+                 return false;
+               }
+             }
+           }
+         }
+      }
+    }
+
+    class_weighty_things.resize(final_class_number);
+    class_biasy_things.resize(final_class_number);
+    for (int class_index = 0; class_index < final_class_number; class_index++) {
+      class_weighty_things[class_index].resize(darn_input_maps.back().size());
+       if (!(file >> class_biasy_things[class_index])) {
+         return false;
+        }
+        for (int feature_index = 0; feature_index < darn_input_maps.back().size(); feature_index++) {
+          if (!(file >> class_weighty_things[class_index][feature_index])) {
+           return false;
+          }
+        }
+      }
+      return true;
+    }
+
   //constructor for the CNN class, initializing filters, biases, input maps, and temporary maps for pooling
   CNN () {
     filters.resize(number_of_kernels_or_whatever_per_layer.size());
@@ -288,8 +343,21 @@ class CNN {
 //finally, the main function to run the CNN
 int main() {
   CNN cnn;
+  
+
+
+  //input image file path (change this to the path of your image)
+  std::string filename;
+  std::cout << "Enter the path to the image file: ";
+  std::getline(std::cin, filename);
+  cnn.photo_vectors = cnn.create_vector_to_input_from_this_darn_picturey_thing(filename);
+  if (cnn.photo_vectors.empty()) {
+    std::cerr << "Error: Could not process the image." << std::endl;
+    return 1;
+  }
+
   for (int layer = 0; layer < cnn.filters.size(); layer++) {
-    cnn.multiplyKernels(layer, cnn.filters[layer], (layer == 0) ? cnn.photo_vectors : cnn.darn_input_maps[layer - 1], cnn.biases);
+    cnn.multiplyKernels(layer, cnn.filters[layer], (layer == 0) ? cnn.photo_vectors : cnn.darn_input_maps[layer], cnn.biases);
     if (layer == pool_after_conv_slot - 1 || layer == second_pool_after_conv_slot - 1) {
       cnn.darn_input_maps[layer + 1] = cnn.max_pool_this_darn_thing(((layer == 1) ? 0 :  1), cnn.temporary_map_for_pooling);
     }
