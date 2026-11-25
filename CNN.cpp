@@ -7,6 +7,7 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 #include <fstream>
+#include <iomanip>
 
 /**This code is not meant to function as a real Convolutional Neural Network would, but show how they are structured
 and how they calculate and predict.
@@ -34,6 +35,9 @@ using Image = std::vector<Matrix>;
 //layers after pooling
 const int pool_after_conv_slot = 2;
 const int second_pool_after_conv_slot = 4;
+
+//learning rate for the training process
+double learning_rate = 0.01;
 
 //size of the actual scanning matrix (kernel) for the convolution operation
 int kernel_size_y = 3;
@@ -106,12 +110,12 @@ class CNN {
     return photo_vectors;
   }
   
-  std::vector<double> classify (const std::vector<Matrix> &input_maps, const std::vector<std::vector<double>>& class_weights, const std::vector<double>& class_biases) {
+  std::vector<double> classify (const std::vector<Matrix> &input_maps, const std::vector<std::vector<double>>& class_weights, const std::vector<double>& class_biases, std::vector<double> &features) {
     if (input_maps.empty()) {
       return {};
     }
     
-    std::vector<double> intermediate_vector(input_maps.size(), 0.0);
+    features.assign(input_maps.size(), 0.0);
     std::vector<double> output_vector(final_class_number, 0.0);
 
     for (int map_count = 0; map_count < input_maps.size(); map_count++) {
@@ -121,17 +125,18 @@ class CNN {
           sum += input_maps[map_count][row][col];
         }
       }
-      intermediate_vector[map_count] = sum/(input_maps[map_count].size() * input_maps[map_count][0].size());
+      features[map_count] = sum/(input_maps[map_count].size() * input_maps[map_count][0].size());
     }
     
     for (int class_index = 0; class_index < final_class_number; class_index++) {
       double class_sum = class_biases[class_index];
-      for (int averaged_map = 0; averaged_map < intermediate_vector.size(); averaged_map++) {
-        class_sum += class_weights[class_index][averaged_map] * intermediate_vector[averaged_map];
+      for (int averaged_map = 0; averaged_map < features.size(); averaged_map++) {
+        class_sum += class_weights[class_index][averaged_map] * features[averaged_map];
       }
       output_vector[class_index] = class_sum;
     }
 
+    
     return softmax(output_vector);
   }
 
@@ -199,6 +204,49 @@ class CNN {
     }
   }
 
+  bool save_weights_and_biases_to_file(const std::string &filename) {
+    std::ofstream file(filename);
+    if (!file) {
+      return false;
+    }
+
+    file << std::setprecision(17); // Set precision for floating-point numbers
+
+    for (int layer = 0; layer < number_of_kernels_or_whatever_per_layer.size(); layer++) {
+      for (int num_filter = 0; num_filter < number_of_kernels_or_whatever_per_layer[layer]; num_filter++) {
+        if (!(file << biases[layer][num_filter] << "\n")) {
+          return false;
+        }
+      }
+    }
+
+    for (int ft = 0; ft < number_of_kernels_or_whatever_per_layer.size(); ft++) {
+       for (int number_of_filters = 0; number_of_filters < number_of_kernels_or_whatever_per_layer[ft]; number_of_filters++) {
+         for (int num_of_input_maps_per_filter_aka_channels = 0; num_of_input_maps_per_filter_aka_channels < ((ft == 0) ? 3 : number_of_kernels_or_whatever_per_layer[ft - 1]); num_of_input_maps_per_filter_aka_channels++) {
+           for (int row = 0; row < kernel_size_x; row++) {
+            for (int col = 0; col < kernel_size_y; col++) {
+               if (!(file << filters[ft][number_of_filters][num_of_input_maps_per_filter_aka_channels][row][col] << "\n")) {
+                 return false;
+               }
+             }
+           }
+         }
+      }
+    }
+
+    for (int class_index = 0; class_index < final_class_number; class_index++) {
+      if (!(file << class_biasy_things[class_index] << "\n")) {
+        return false;
+      }
+      for (int feature_index = 0; feature_index < darn_input_maps.back().size(); feature_index++) {
+        if (!(file << class_weighty_things[class_index][feature_index] << "\n")) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
   //function to load weights and biases from a file as opposed to random initialization, for testing and evaluation purposes
   bool load_weights_and_biases_from_file(const std::string &filename) {
     std::ifstream file(filename);
@@ -239,17 +287,50 @@ class CNN {
     class_biasy_things.resize(final_class_number);
     for (int class_index = 0; class_index < final_class_number; class_index++) {
       class_weighty_things[class_index].resize(darn_input_maps.back().size());
-       if (!(file >> class_biasy_things[class_index])) {
-         return false;
-        }
-        for (int feature_index = 0; feature_index < darn_input_maps.back().size(); feature_index++) {
-          if (!(file >> class_weighty_things[class_index][feature_index])) {
-           return false;
-          }
+
+      if (!(file >> class_biasy_things[class_index])) {
+        return false;
+      }
+
+      for (int feature_index = 0; feature_index < darn_input_maps.back().size(); feature_index++) {
+        if (!(file >> class_weighty_things[class_index][feature_index])) {
+          return false;
         }
       }
-      return true;
     }
+
+    return true;
+  }
+
+  double classifier_train_one_thingamabob (std::vector<double> &features, CNN &cnn, int correct_class_index) {
+    std::vector<int> target;
+    target.resize(final_class_number, 0);
+    target[correct_class_index] = 1;
+
+    std::vector<double> probabilities = cnn.classify(cnn.darn_input_maps.back(), cnn.class_weighty_things, cnn.class_biasy_things, features);
+    
+
+
+    std::vector<double> error;
+    error.resize(final_class_number);
+    for (int i = 0; i< final_class_number; i++) {
+      error[i] = probabilities[i] - target[i];
+    }
+
+
+    int loss = 0;
+    loss = -std::log(probabilities[correct_class_index]);
+
+    for (int class_index = 0; class_index < final_class_number; class_index++) {
+      class_biasy_things[class_index] -= learning_rate * error[class_index];
+      for (int feature_index = 0; feature_index < features.size(); feature_index++) {
+        double weight_gradient = error[class_index] * features[feature_index];
+        class_weighty_things[class_index][feature_index] -= weight_gradient * learning_rate;
+      }
+    }
+
+    return loss;
+  }
 
   //constructor for the CNN class, initializing filters, biases, input maps, and temporary maps for pooling
   CNN () {
@@ -343,8 +424,29 @@ class CNN {
 //finally, the main function to run the CNN
 int main() {
   CNN cnn;
-  
+  std::vector<double> features;
 
+  std::string train;
+  std::cout << "Do you want to train the CNN or use pre-trained weights and biases? (Enter 'train' or 'use'): ";
+  std::getline(std::cin, train);
+  if (train == "use") {
+    std::string weights_file;
+    std::cout << "Enter the path to the weights and biases file: ";
+    std::getline(std::cin, weights_file);
+    if (!cnn.load_weights_and_biases_from_file(weights_file)) {
+      std::cerr << "Error: Could not load weights and biases from the file." << std::endl;
+      return 1;
+    }
+  }
+
+  if (train == "train") {
+    std::string correct_class_str;
+    std::cout << "Enter the correct class index (0 to " << final_class_number - 1 << "): ";
+    std::getline(std::cin, correct_class_str);
+    int correct_class_index = std::stoi(correct_class_str);
+
+    return cnn.classifier_train_one_thingamabob(features, cnn, correct_class_index); // Will add this later.
+  }
 
   //input image file path (change this to the path of your image)
   std::string filename;
@@ -363,7 +465,7 @@ int main() {
     }
   }
   
-  std::vector<double> predictions = cnn.classify(cnn.darn_input_maps.back(), cnn.class_weighty_things, cnn.class_biasy_things);
+  std::vector<double> predictions = cnn.classify(cnn.darn_input_maps.back(), cnn.class_weighty_things, cnn.class_biasy_things, features);
   std::cout << "Predictions: ";
   for (const auto &probability : predictions) {
     std::cout << probability << " ";
