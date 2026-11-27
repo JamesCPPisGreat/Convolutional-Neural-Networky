@@ -308,8 +308,6 @@ class CNN {
     target[correct_class_index] = 1;
 
     std::vector<double> probabilities = cnn.classify(cnn.darn_input_maps.back(), cnn.class_weighty_things, cnn.class_biasy_things, features);
-    
-
 
     std::vector<double> error;
     error.resize(final_class_number);
@@ -318,7 +316,7 @@ class CNN {
     }
 
 
-    int loss = 0;
+    double loss = 0;
     loss = -std::log(probabilities[correct_class_index]);
 
     for (int class_index = 0; class_index < final_class_number; class_index++) {
@@ -429,6 +427,7 @@ int main() {
   std::string train;
   std::cout << "Do you want to train the CNN or use pre-trained weights and biases? (Enter 'train' or 'use'): ";
   std::getline(std::cin, train);
+
   if (train == "use") {
     std::string weights_file;
     std::cout << "Enter the path to the weights and biases file: ";
@@ -439,18 +438,9 @@ int main() {
     }
   }
 
-  if (train == "train") {
-    std::string correct_class_str;
-    std::cout << "Enter the correct class index (0 to " << final_class_number - 1 << "): ";
-    std::getline(std::cin, correct_class_str);
-    int correct_class_index = std::stoi(correct_class_str);
-
-    return cnn.classifier_train_one_thingamabob(features, cnn, correct_class_index); // Will add this later.
-  }
-
-  //input image file path (change this to the path of your image)
+  //input image file path
   std::string filename;
-  std::cout << "Enter the path to the image file: ";
+  std::cout << "Enter the path to the image file (must be a jpg): ";
   std::getline(std::cin, filename);
   cnn.photo_vectors = cnn.create_vector_to_input_from_this_darn_picturey_thing(filename);
   if (cnn.photo_vectors.empty()) {
@@ -471,6 +461,25 @@ int main() {
     std::cout << probability << " ";
   }
   std::cout << std::endl;
+
+  if (train == "train") {
+    std::string correct_class_str;
+    std::cout << "Enter the correct class index (0 to " << final_class_number - 1 << "): ";
+    std::getline(std::cin, correct_class_str);
+    int correct_class_index = std::stoi(correct_class_str);
+
+    double loss = cnn.classifier_train_one_thingamabob(features, cnn, correct_class_index);
+    std::cout << "Training completed. Loss: " << loss << std::endl;
+
+    std::string weights_file;
+    std::cout << "Enter the path to save the weights and biases file: ";
+    std::getline(std::cin, weights_file);
+    if (!cnn.save_weights_and_biases_to_file(weights_file)) {
+      std::cerr << "Error: Could not save weights and biases to the file; check file path and format etc." << std::endl;
+      return 1;
+    }
+    
+  }
   
   return 0;
 }
